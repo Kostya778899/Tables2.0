@@ -1,34 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
-public class TableDatas : MonoBehaviour
+[CreateAssetMenu(menuName = "Datas/Table", fileName = "NewTableDatas")]
+public class TableDatas : ScriptableObject
 {
-    // Variables
-
-
-    private void Start()
-    {
-        
-    }
-
-
-#if UNITY_EDITOR
-    [CustomEditor(typeof(TableDatas)), CanEditMultipleObjects]
-    private class TableDatasEditor : Editor
-    {
-        TableDatas _target;
-
-        private void OnEnable() => _target = (TableDatas)target;
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-        }
-    }
-#endif
+    public Vector2Int ColumnsInPageCount = new Vector2Int(4, 10);
+    public List<Cell.Datas> CellsDatas;
 }

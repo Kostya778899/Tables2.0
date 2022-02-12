@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class UiTextDefault : MonoBehaviour
+public abstract class UiTextDefault : UiCellElementDefault
 {
     protected string Text = "";
 

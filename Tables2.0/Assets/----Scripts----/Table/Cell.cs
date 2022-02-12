@@ -2,33 +2,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 public class Cell : MonoBehaviour
 {
-    // Variables
+    [SerializeField] private CellSettings _settings;
+    [SerializeField] private List<UiTextDefault> _texts;
 
-
-    private void Start()
+    [System.Serializable]
+    public struct Datas
     {
-        
+        public List<string> Texts;
     }
 
-
-#if UNITY_EDITOR
-    [CustomEditor(typeof(Cell)), CanEditMultipleObjects]
-    private class CellEditor : Editor
+    public void Updating(Datas datas)
     {
-        Cell _target;
+        if (datas.Texts.Count > _texts.Count) CreateTexts(datas.Texts.Count - _texts.Count);
+        ActiveTexts(datas.Texts.Count);
 
-        private void OnEnable() => _target = (Cell)target;
-        public override void OnInspectorGUI()
+        for (int i = 0; i < datas.Texts.Count; i++)
         {
-            base.OnInspectorGUI();
-
+            if (i >= datas.Texts.Count)
+            {
+                _texts.Add(Instantiate(_settings.TextPrefab, transform));
+            }
+            _texts[i].SetText(datas.Texts[i]);
         }
     }
-#endif
+    private void CreateTexts(int count) { for (int i = 0; i < count; i++) _texts.Add(Instantiate(_settings.TextPrefab, transform)); }
+    private void ActiveTexts(int count) { for (int i = 0; i < _texts.Count; i++) _texts[i].gameObject.SetActive(i < count); }
 }
