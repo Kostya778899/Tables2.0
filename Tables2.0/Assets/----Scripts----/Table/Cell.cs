@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
@@ -8,26 +9,21 @@ public class Cell : MonoBehaviour
     [SerializeField] private CellSettings _settings;
     [SerializeField] private List<UiTextDefault> _texts;
 
-    [System.Serializable]
-    public struct Datas
+    public void Updating(string[] texts)
     {
-        public List<string> Texts;
-    }
+        if (texts.Length > _texts.Count) CreateTexts(texts.Length - _texts.Count);
+        ActiveTexts(texts.Length);
 
-    public void Updating(Datas datas)
-    {
-        if (datas.Texts.Count > _texts.Count) CreateTexts(datas.Texts.Count - _texts.Count);
-        ActiveTexts(datas.Texts.Count);
-
-        for (int i = 0; i < datas.Texts.Count; i++)
+        for (int i = 0; i < texts.Length; i++)
         {
-            if (i >= datas.Texts.Count)
+            if (i >= texts.Length)
             {
                 _texts.Add(Instantiate(_settings.TextPrefab, transform));
             }
-            _texts[i].SetText(datas.Texts[i]);
+            _texts[i].SetText(texts[i]);
         }
     }
+
     private void CreateTexts(int count) { for (int i = 0; i < count; i++) _texts.Add(Instantiate(_settings.TextPrefab, transform)); }
     private void ActiveTexts(int count) { for (int i = 0; i < _texts.Count; i++) _texts[i].gameObject.SetActive(i < count); }
 }

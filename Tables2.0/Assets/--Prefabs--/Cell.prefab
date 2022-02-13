@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5346510361081468857}
   - component: {fileID: 5346510361081468486}
   - component: {fileID: 5346510361081468856}
-  - component: {fileID: 5346510361081468859}
+  - component: {fileID: 6280893864488870451}
   - component: {fileID: 788367652768296056}
   m_Layer: 5
   m_Name: Cell
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 5, y: 5}
   m_UseGraphicAlpha: 0
---- !u!114 &5346510361081468859
+--- !u!114 &6280893864488870451
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,12 +107,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 10
-    m_Right: 10
-    m_Top: 5
-    m_Bottom: 5
+    m_Left: 5
+    m_Right: 5
+    m_Top: 0
+    m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 5
+  m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1

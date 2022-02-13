@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,8 +14,11 @@ public class Table : MonoBehaviour
 
     [SerializeField] private float _contentWidth = 640f;
     [SerializeField] private Color _matchedCharsColor = Color.blue;
+    [SerializeField] private string _datasJson = "";
 
     private List<Cell> _cells = new List<Cell>();
+    private List<List<string>> _cellsTexts = new List<List<string>>();
+    private TableDatas _datas;
     private int _currentPageIndex = 0;
     private int _pagesCount = 1;
 
@@ -29,22 +33,31 @@ public class Table : MonoBehaviour
 
     public void SortByMatch(string value)
     {
-        int columnsCount = _datasContainer.Datas.CellsDatas.Count / _datasContainer.Datas.ColumnsInPageCount.x;
-        int[] columnsDifferences = new int[columnsCount];
-        for (int i = 0; i < columnsDifferences.Length; i++) columnsDifferences[i] = -1;
-
-        for (int i = 0; i < columnsCount; i++)
+        if (string.IsNullOrWhiteSpace(value))
         {
-            for (int i0 = 0; i0 < _datasContainer.Datas.ColumnsInPageCount.x; i0++)
+            ResetDatas();
+        }
+        else
+        {
+            int[] columnsDifferences = new int[_datasContainer.Datas.Texts.Count];
+            for (int i = 0; i < columnsDifferences.Length; i++) columnsDifferences[i] = -1;
+
+            for (int i = 0; i < columnsDifferences.Length; i++)
             {
-                columnsDifferences[i] = Math.Max(columnsDifferences[i], _datasContainer.Datas.CellsDatas[i + i0].Texts[0].IndexOf(value));
+                columnsDifferences[i] = Math.Max(columnsDifferences[i], _cellsTexts[i].IndexOf(value));
+                if (columnsDifferences[i] >= 0)
+                {
+                    _cellsTexts[i][0] = _cellsTexts[i][0]
+                        .Insert(value.Length, ">*")
+                        .Insert(columnsDifferences[i], "*<");
+
+                    Debug.Log(_cellsTexts[i]);
+                    Debug.Log(columnsDifferences[i]);
+                }
             }
         }
 
-        for (int i = 0; i < columnsDifferences.Length; i++)
-        {
-            Debug.Log(columnsDifferences[i]);
-        }
+        UpdatingPage(0);
     }
 
     private void Start()
@@ -54,21 +67,36 @@ public class Table : MonoBehaviour
 
     private async void Initialize()
     {
+        _datasContainer.LoadDatas(_datasJson);
         _datasContainer.Datas = await _datasLoader.Get();
+        ResetDatas();
 
         UpdatingContent();
-        CreateCells(_datasContainer.Datas.ColumnsInPageCount.x * _datasContainer.Datas.ColumnsInPageCount.y);
+        CreateCells(_datas.ColumnsInPageCount.x * _datas.ColumnsInPageCount.y);
 
         UpdatingPage(0);
 
-        _pagesCount = _datasContainer.Datas.CellsDatas.Count > _cells.Count ?
-            (int)Math.Ceiling((float)_datasContainer.Datas.CellsDatas.Count / _cells.Count) : 1;
+        _pagesCount = _datas.Texts.Count > _cells.Count ?
+            (int)Math.Ceiling((float)_datas.Texts.Count / _cells.Count) : 1;
+    }
+    private void ResetDatas()
+    {
+        _datas = _datasContainer.Datas;
+        _cellsTexts = new List<List<string>>(_datas.Texts.Count);
+        for (int y = 0; y < _datas.Texts.Count; y++)
+        {
+            _cellsTexts.Add(new List<string>(_datas.Texts[y].Count));
+            for (int x = 0; x < _datas.Texts[y].Count; x++)
+            {
+                _cellsTexts[y].Add(_datas.Texts[y][x]);
+            }
+        }
     }
 
     private void UpdatingContent()
     {
-        _content.constraintCount = _datasContainer.Datas.ColumnsInPageCount.x;
-        _content.cellSize = new Vector2(_contentWidth / _datasContainer.Datas.ColumnsInPageCount.x, _content.cellSize.y);
+        _content.constraintCount = _datas.ColumnsInPageCount.x;
+        _content.cellSize = new Vector2(_contentWidth / _datas.ColumnsInPageCount.x, _content.cellSize.y);
     }
     private void CreateCells(int count)
     {
@@ -85,11 +113,12 @@ public class Table : MonoBehaviour
 
     private void UpdatingPage(int startCellIndex)
     {
-        UpdatingCells(startCellIndex, Mathf.Min(_cells.Count, _datasContainer.Datas.CellsDatas.Count - startCellIndex));
+        UpdatingCells(startCellIndex, Mathf.Min(_cells.Count, _datas.Texts.Count - startCellIndex));
     }
     private void UpdatingCells(int startIndex, int count)
     {
-        for (int i = 0; i < count; i++) _cells[i].Updating(_datasContainer.Datas.CellsDatas[i + startIndex]);
         ActiveCells(count);
+        for (int i = 0; i < count; i++)
+            _cells[i].Updating(_cellsTexts[i].ToArray());
     }
 }
