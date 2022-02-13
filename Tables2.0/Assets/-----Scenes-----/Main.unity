@@ -987,7 +987,19 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1558090414}
+        m_TargetAssemblyTypeName: Table, Assembly-CSharp
+        m_MethodName: SortByMatch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -1190,10 +1202,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0002d2873b5a354fbae2c25f1205bad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _datas: {fileID: 11400000, guid: 039a86a197312054ca63ed9bca30fd78, type: 2}
+  _datasContainer: {fileID: 11400000, guid: a5afbd6a02c74ed4e935b8eee9449600, type: 2}
+  _datasLoader: {fileID: 11400000, guid: b1d79107cc71830438d523afc5f569d0, type: 2}
   _cellPrefab: {fileID: 788367652768296056, guid: ed320ccc8c0522146bf2ac00413bf36c, type: 3}
   _content: {fileID: 1534156900}
   _contentWidth: 640
+  _matchedCharsColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &1863491215
 GameObject:
   m_ObjectHideFlags: 0
